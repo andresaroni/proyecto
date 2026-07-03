@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FacturaPro | Sistema Simulado</title>
+  <style>
+    :root {
+      --bg: #f4f8fb;
+      --panel: #ffffff;
+      --panel-soft: #eef6ff;
+      --text: #152033;
+      --muted: #65758b;
+      --line: #dce6f2;
+      --blue: #1677ff;
+      --blue-dark: #0957c3;
+      --cyan: #0fc6b7;
+      --green: #16a34a;
+      --yellow: #f59e0b;
+      --red: #ef4444;
+      --purple: #7c3aed;
+      --shadow: 0 22px 60px rgba(22, 49, 82, 0.12);
+      --radius: 22px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at 20% 0%, rgba(22, 119, 255, 0.13), transparent 28rem),
+        radial-gradient(circle at 100% 0%, rgba(15, 198, 183, 0.12), transparent 28rem),
+        var(--bg);
+    }
+
+    button, input, select {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .app {
+      display: grid;
+      grid-template-columns: 280px minmax(0, 1fr);
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      padding: 22px;
+      background: #07172d;
+      color: #eaf5ff;
+      overflow-y: auto;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 26px;
+    }
+
+    .logo {
+      width: 46px;
+      height: 46px;
+      display: grid;
+      place-items: center;
+      border-radius: 16px;
+      color: #061225;
+      font-weight: 950;
+      background: linear-gradient(135deg, #55f3e9, #51a7ff);
+      box-shadow: 0 16px 32px rgba(81, 167, 255, 0.28);
+    }
+
+    .brand strong {
+      display: block;
+      line-height: 1;
+      font-size: 1.12rem;
+      letter-spacing: -0.04em;
+    }
+
+    .brand span {
+      color: #8ea8c2;
+      font-size: 0.82rem;
+    }
+
+    .business-card {
+      padding: 16px;
+      margin-bottom: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .business-card span {
+      display: block;
+      color: #93aeca;
+      font-size: 0.78rem;
+    }
+
+    .business-card strong {
+      display: block;
+      margin: 3px 0 8px;
+      font-size: 1rem;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      color: #bfffea;
+      background: rgba(22, 163, 74, 0.18);
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+
+    .status-pill::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #2df47f;
+      box-shadow: 0 0 18px #2df47f;
+    }
+
+    .nav-title {
+      margin: 22px 0 10px;
+      color: #7490ad;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-size: 0.72rem;
+      font-weight: 900;
+    }
+
+    .nav-btn {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-height: 46px;
+      padding: 0 12px;
+      margin-bottom: 6px;
+      border: 0;
+      border-radius: 14px;
+      color: #aac0d7;
+      background: transparent;
+      text-align: left;
+      font-weight: 760;
+      transition: 150ms ease;
+    }
+
+    .nav-btn:hover, .nav-btn.active {
+      color: #ffffff;
+      background: rgba(81, 167, 255, 0.16);
+    }
+
+    .nav-btn.active {
+      box-shadow: inset 3px 0 0 #55f3e9;
+    }
+
+    .nav-icon {
+      display: grid;
+      place-items: center;
+      width: 30px;
+      height: 30px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.08);
+      font-size: 0.82rem;
+    }
+
+    .main {
+      min-width: 0;
+      padding: 22px;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      margin: -22px -22px 22px;
+      padding: 18px 22px;
+      background: rgba(244, 248, 251, 0.82);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(220, 230, 242, 0.72);
+    }
+
+    .topbar h1 {
+      margin: 0;
+      font-size: clamp(1.45rem, 3vw, 2.25rem);
+      line-height: 1;
+      letter-spacing: -0.06em;
+    }
+
+    .topbar p {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .btn {
+      min-height: 42px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 0 14px;
+      border-radius: 13px;
+      border: 1px solid var(--line);
+      color: var(--text);
+      background: #fff;
+      font-weight: 850;
+      transition: transform 150ms ease, border-color 150ms ease, background 150ms ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      border-color: #bfd1e6;
+    }
+
+    .btn-primary {
+      border: 0;
+      color: #ffffff;
+      background: linear-gradient(135deg, var(--blue), var(--cyan));
+      box-shadow: 0 16px 34px rgba(22, 119, 255, 0.2);
+    }
+
+    .btn-danger {
+      color: #fff;
+      border: 0;
+      background: var(--red);
+    }
+
+    .search {
+      width: min(340px, 100%);
+      min-height: 42px;
+      padding: 0 14px;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      outline: none;
+      background: #fff;
+    }
+
+    .search:focus, select:focus, input:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 4px rgba(22, 119, 255, 0.12);
+    }
+
+    .view {
+      display: none;
+    }
+
+    .view.active {
+      display: block;
+    }
+
+    .grid {
+      display: grid;
+      gap: 16px;
+    }
+
+    .kpi-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: var(--shadow);
+    }
+
+    .card.pad {
+      padding: 20px;
+    }
+
+    .kpi {
+      position: relative;
+      overflow: hidden;
+      padding: 20px;
+    }
+
+    .kpi::after {
+      content: "";
+      position: absolute;
+      inset: auto -28px -42px auto;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: rgba(22, 119, 255, 0.1);
+    }
+
+    .kpi span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.88rem;
+      font-weight: 750;
+    }
+
+    .kpi strong {
+      display: block;
+      margin-top: 8px;
+      font-size: clamp(1.5rem, 3vw, 2.1rem);
+      line-height: 1;
+      letter-spacing: -0.06em;
+    }
+
+    .trend {
+      display: inline-flex;
+      margin-top: 13px;
+      padding: 5px 9px;
+      border-radius: 999px;
+      color: #087a38;
+      background: #dcfce7;
+      font-size: 0.78rem;
+      font-weight: 850;
+    }
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.65fr);
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .card-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .card-head h2 {
+      margin: 0;
+      font-size: 1.18rem;
+      letter-spacing: -0.04em;
+    }
+
+    .card-head p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .chart {
+      height: 260px;
+      display: flex;
+      align-items: end;
+      gap: 14px;
+      padding: 18px;
+      border-radius: 18px;
+      background: linear-gradient(180deg, #f8fbff, #edf5ff);
+      border: 1px solid #d9e8f7;
+    }
+
+    .bar-wrap {
+      flex: 1;
+      min-width: 34px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+
+    .bar {
+      width: 100%;
+      min-height: 16px;
+      border-radius: 999px 999px 8px 8px;
+      background: linear-gradient(180deg, var(--blue), var(--cyan));
+      box-shadow: 0 12px 28px rgba(22, 119, 255, 0.22);
+      margin-bottom: 9px;
+    }
+
+    .activity-list, .support-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .activity {
+      display: grid;
+      grid-template-columns: 42px 1fr auto;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      border: 1px solid #e3edf7;
+      border-radius: 16px;
+      background: #fbfdff;
+    }
+
+    .activity-icon {
+      display: grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      color: #0b5fd3;
+      background: #e8f3ff;
+      font-weight: 950;
+      font-size: 0.82rem;
+    }
+
+    .activity strong {
+      display: block;
+      font-size: 0.94rem;
+    }
+
+    .activity span {
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    .amount {
+      font-weight: 950;
+      white-space: nowrap;
+    }
+
+    .section-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .table-card {
+      overflow: hidden;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      min-width: 760px;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 15px 16px;
+      text-align: left;
+      border-bottom: 1px solid #edf2f7;
+      vertical-align: middle;
+    }
+
+    th {
+      color: #53657b;
+      background: #f8fbff;
+      font-size: 0.77rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 950;
+    }
+
+    td {
+      color: #26364c;
+      font-size: 0.94rem;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 9px;
+      border-radius: 999px;
+      font-size: 0.76rem;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .badge.ok {
+      color: #087a38;
+      background: #dcfce7;
+    }
+
+    .badge.warn {
+      color: #9a5a00;
+      background: #fef3c7;
+    }
+
+    .badge.danger {
+      color: #b91c1c;
+      background: #fee2e2;
+    }
+
+    .badge.info {
+      color: #0758bd;
+      background: #dbeafe;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    label {
+      display: grid;
+      gap: 7px;
+      color: #40516a;
+      font-size: 0.88rem;
+      font-weight: 850;
+    }
+
+    input, select {
+      width: 100%;
+      min-height: 44px;
+      padding: 0 12px;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      outline: none;
+      color: var(--text);
+      background: #fff;
+    }
+
+    .invoice-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 360px;
+      gap: 16px;
+      align-items: start;
+    }
+
+    .product-picker {
+      display: grid;
+      grid-template-columns: 1fr 100px 120px;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .invoice-lines {
+      display: grid;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .line-item {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 12px;
+      align-items: center;
+      padding: 12px;
+      border: 1px solid #e5edf6;
+      border-radius: 15px;
+      background: #fbfdff;
+    }
+
+    .line-item strong, .line-item span {
+      display: block;
+    }
+
+    .line-item span {
+      color: var(--muted);
+      font-size: 0.83rem;
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 11px 0;
+      border-bottom: 1px solid #edf2f7;
+      color: var(--muted);
+    }
+
+    .summary-row.total {
+      color: var(--text);
+      border-bottom: 0;
+      font-size: 1.25rem;
+      font-weight: 950;
+    }
+
+    .simulator-note {
+      margin-top: 16px;
+      padding: 14px;
+      border-radius: 16px;
+      color: #075985;
+      background: #e0f2fe;
+      font-size: 0.9rem;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .health-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .health {
+      padding: 18px;
+      border: 1px solid #e3edf7;
+      border-radius: 18px;
+      background: #fbfdff;
+    }
+
+    .health strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 1.08rem;
+    }
+
+    .health span {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .progress {
+      height: 10px;
+      overflow: hidden;
+      margin-top: 14px;
+      border-radius: 999px;
+      background: #e6edf5;
+    }
+
+    .progress i {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--blue), var(--cyan));
+    }
+
+    .toast {
+      position: fixed;
+      right: 22px;
+      bottom: 22px;
+      z-index: 99;
+      display: none;
+      max-width: 360px;
+      padding: 15px 16px;
+      border-radius: 18px;
+      color: #ffffff;
+      background: #0f172a;
+      box-shadow: 0 18px 60px rgba(15, 23, 42, 0.28);
+      font-weight: 800;
+    }
+
+    .toast.show {
+      display: block;
+      animation: slide 220ms ease;
+    }
+
+    @keyframes slide {
+      from { transform: translateY(12px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    @media (max-width: 1100px) {
+      .app {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        position: static;
+        height: auto;
+      }
+
+      .nav-group {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+      }
+
+      .nav-btn {
+        margin: 0;
+      }
+
+      .content-grid,
+      .invoice-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .kpi-grid,
+      .health-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 700px) {
+      .main {
+        padding: 14px;
+      }
+
+      .topbar {
+        position: static;
+        flex-direction: column;
+        align-items: stretch;
+        margin: -14px -14px 14px;
+        padding: 16px 14px;
+      }
+
+      .top-actions {
+        justify-content: stretch;
+      }
+
+      .btn, .search {
+        width: 100%;
+      }
+
+      .nav-group,
+      .kpi-grid,
+      .two-col,
+      .form-grid,
+      .health-grid,
+      .product-picker {
+        grid-template-columns: 1fr;
+      }
+
+      .activity, .line-item {
+        grid-template-columns: 1fr;
+      }
+
+      .chart {
+        gap: 8px;
+        padding: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <a class="brand" href="index.html">
+        <span class="logo">FP</span>
+        <span><strong>FacturaPro</strong><span>Prototipo del sistema</span></span>
+      </a>
+
+      <div class="business-card">
+        <span>Negocio activo</span>
+        <strong>MiniMarket La Esquina</strong>
+        <span>RUC 0912345678001</span>
+        <div style="margin-top: 12px;"><span class="status-pill">SRI conectado</span></div>
+      </div>
+
+      <div class="nav-title">Módulos</div>
+      <div class="nav-group">
+        <button class="nav-btn active" data-view="dashboard"><span class="nav-icon">DB</span>Dashboard</button>
+        <button class="nav-btn" data-view="facturas"><span class="nav-icon">FE</span>Facturas</button>
+        <button class="nav-btn" data-view="nueva"><span class="nav-icon">+</span>Nueva factura</button>
+        <button class="nav-btn" data-view="inventario"><span class="nav-icon">IN</span>Inventario</button>
+        <button class="nav-btn" data-view="clientes"><span class="nav-icon">CL</span>Clientes</button>
+        <button class="nav-btn" data-view="reportes"><span class="nav-icon">RP</span>Reportes</button>
+        <button class="nav-btn" data-view="sri"><span class="nav-icon">SRI</span>Estado SRI</button>
+        <button class="nav-btn" data-view="soporte"><span class="nav-icon">ST</span>Soporte</button>
+      </div>
+
+      <div class="nav-title">Presentación</div>
+      <a class="nav-btn" href="index.html"><span class="nav-icon">WEB</span>Volver a landing</a>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <h1 id="viewTitle">Dashboard</h1>
+          <p id="viewSubtitle">Resumen operativo del negocio en tiempo real.</p>
+        </div>
+        <div class="top-actions">
+          <input class="search" id="globalSearch" type="search" placeholder="Buscar factura, cliente o producto">
+          <button class="btn" id="syncBtn">Sincronizar SRI</button>
+          <button class="btn btn-primary" data-open-new>Emitir factura</button>
+        </div>
+      </header>
+
+      <section class="view active" id="dashboard">
+        <div class="grid kpi-grid">
+          <article class="card kpi"><span>Ventas de hoy</span><strong id="kpiSales">$0.00</strong><em class="trend">+18% vs ayer</em></article>
+          <article class="card kpi"><span>Facturas emitidas</span><strong id="kpiInvoices">0</strong><em class="trend">Autorizadas por SRI</em></article>
+          <article class="card kpi"><span>Clientes atendidos</span><strong id="kpiClients">0</strong><em class="trend">Ticket promedio alto</em></article>
+          <article class="card kpi"><span>Stock crítico</span><strong id="kpiStock">0</strong><em class="trend" style="color:#9a5a00;background:#fef3c7;">Revisar inventario</em></article>
+        </div>
+
+        <div class="content-grid">
+          <article class="card pad">
+            <div class="card-head">
+              <div><h2>Ventas de la semana</h2><p>Simulación de ingresos diarios.</p></div>
+              <span class="badge ok">Operación estable</span>
+            </div>
+            <div class="chart" id="salesChart"></div>
+          </article>
+
+          <article class="card pad">
+            <div class="card-head">
+              <div><h2>Actividad reciente</h2><p>Últimos movimientos del sistema.</p></div>
+            </div>
+            <div class="activity-list" id="activityList"></div>
+          </article>
+        </div>
+
+        <div class="two-col" style="margin-top:16px;">
+          <article class="card pad">
+            <div class="card-head"><div><h2>Inventario prioritario</h2><p>Productos con baja existencia.</p></div></div>
+            <div class="table-wrap"><table><thead><tr><th>Producto</th><th>Stock</th><th>Estado</th></tr></thead><tbody id="criticalStockRows"></tbody></table></div>
+          </article>
+          <article class="card pad">
+            <div class="card-head"><div><h2>Resumen del kit FacturaPro</h2><p>Estado del paquete instalado.</p></div></div>
+            <div class="health-grid">
+              <div class="health"><strong>UPS</strong><span>Autonomía estimada 42 min.</span><div class="progress"><i style="width:84%;"></i></div></div>
+              <div class="health"><strong>Impresora</strong><span>Papel térmico al 62%.</span><div class="progress"><i style="width:62%;"></i></div></div>
+              <div class="health"><strong>Nube</strong><span>Respaldo automático activo.</span><div class="progress"><i style="width:98%;"></i></div></div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="view" id="facturas">
+        <div class="section-toolbar">
+          <div><h2 style="margin:0;">Facturas electrónicas</h2><p style="margin:4px 0 0;color:var(--muted);">Comprobantes simulados enviados y autorizados.</p></div>
+          <button class="btn btn-primary" data-open-new>Nueva factura</button>
+        </div>
+        <article class="card table-card"><div class="table-wrap"><table><thead><tr><th>Número</th><th>Cliente</th><th>Fecha</th><th>Total</th><th>Estado</th><th>Acción</th></tr></thead><tbody id="invoiceRows"></tbody></table></div></article>
+      </section>
+
+      <section class="view" id="nueva">
+        <div class="invoice-layout">
+          <article class="card pad">
+            <div class="card-head"><div><h2>Nueva factura electrónica</h2><p>Prototipo de emisión con cálculo automático de IVA y autorización simulada del SRI.</p></div></div>
+            <div class="form-grid">
+              <label>Cliente
+                <select id="invoiceClient"></select>
+              </label>
+              <label>Forma de pago
+                <select id="paymentMethod"><option>Efectivo</option><option>Transferencia</option><option>Tarjeta de débito</option><option>Crédito 15 días</option></select>
+              </label>
+            </div>
+            <div class="product-picker">
+              <label>Producto<select id="productSelect"></select></label>
+              <label>Cantidad<input id="productQty" type="number" min="1" value="1"></label>
+              <button class="btn btn-primary" id="addProduct" type="button">Agregar</button>
+            </div>
+            <div class="invoice-lines" id="invoiceLines"></div>
+            <div class="simulator-note">Este módulo es una maqueta funcional: descuenta stock en pantalla, genera una factura simulada y cambia el estado a autorizado.</div>
+          </article>
+
+          <aside class="card pad">
+            <div class="card-head"><div><h2>Resumen</h2><p>Factura No. <span id="nextInvoiceNumber"></span></p></div></div>
+            <div class="summary-row"><span>Subtotal</span><strong id="subtotal">$0.00</strong></div>
+            <div class="summary-row"><span>IVA 15%</span><strong id="tax">$0.00</strong></div>
+            <div class="summary-row total"><span>Total</span><strong id="total">$0.00</strong></div>
+            <button class="btn btn-primary" id="issueInvoice" style="width:100%;margin-top:18px;">Emitir y autorizar</button>
+            <button class="btn" id="clearInvoice" style="width:100%;margin-top:10px;">Limpiar</button>
+          </aside>
+        </div>
+      </section>
+
+      <section class="view" id="inventario">
+        <div class="section-toolbar">
+          <div><h2 style="margin:0;">Inventario</h2><p style="margin:4px 0 0;color:var(--muted);">Control de productos, precios y stock mínimo.</p></div>
+          <button class="btn" id="restockBtn">Simular reposición</button>
+        </div>
+        <article class="card table-card"><div class="table-wrap"><table><thead><tr><th>Código</th><th>Producto</th><th>Categoría</th><th>Precio</th><th>Stock</th><th>Estado</th></tr></thead><tbody id="productRows"></tbody></table></div></article>
+      </section>
+
+      <section class="view" id="clientes">
+        <div class="section-toolbar">
+          <div><h2 style="margin:0;">Clientes</h2><p style="margin:4px 0 0;color:var(--muted);">Base de clientes para facturación rápida.</p></div>
+          <button class="btn btn-primary" id="addClientBtn">Agregar cliente simulado</button>
+        </div>
+        <article class="card table-card"><div class="table-wrap"><table><thead><tr><th>Identificación</th><th>Cliente</th><th>Correo</th><th>Compras</th><th>Última compra</th></tr></thead><tbody id="clientRows"></tbody></table></div></article>
+      </section>
+
+      <section class="view" id="reportes">
+        <div class="grid kpi-grid">
+          <article class="card kpi"><span>Ingresos del mes</span><strong>$18,420</strong><em class="trend">Meta 76%</em></article>
+          <article class="card kpi"><span>Producto top</span><strong>Arroz 5kg</strong><em class="trend">148 unidades</em></article>
+          <article class="card kpi"><span>Margen estimado</span><strong>31%</strong><em class="trend">Saludable</em></article>
+          <article class="card kpi"><span>Facturas anuladas</span><strong>2</strong><em class="trend" style="color:#9a5a00;background:#fef3c7;">Dentro del rango</em></article>
+        </div>
+        <div class="content-grid">
+          <article class="card pad"><div class="card-head"><div><h2>Ventas por categoría</h2><p>Reporte gerencial simulado.</p></div></div><div class="chart" id="categoryChart"></div></article>
+          <article class="card pad"><div class="card-head"><div><h2>Alertas gerenciales</h2><p>Recomendaciones automáticas.</p></div></div><div class="support-list" id="reportAlerts"></div></article>
+        </div>
+      </section>
+
+      <section class="view" id="sri">
+        <article class="card pad">
+          <div class="card-head"><div><h2>Conexión con el SRI</h2><p>Panel de control de servicios tributarios simulados.</p></div><span class="badge ok">Servicio disponible</span></div>
+          <div class="health-grid">
+            <div class="health"><strong>Autorización</strong><span>Última respuesta: 0.9 segundos.</span><div class="progress"><i style="width:96%;"></i></div></div>
+            <div class="health"><strong>Firma electrónica</strong><span>Vigente hasta 22/05/2027.</span><div class="progress"><i style="width:79%;"></i></div></div>
+            <div class="health"><strong>Transmisión</strong><span>98 comprobantes enviados hoy.</span><div class="progress"><i style="width:91%;"></i></div></div>
+          </div>
+        </article>
+        <article class="card table-card" style="margin-top:16px;"><div class="table-wrap"><table><thead><tr><th>Evento</th><th>Fecha</th><th>Resultado</th><th>Detalle</th></tr></thead><tbody id="sriRows"></tbody></table></div></article>
+      </section>
+
+      <section class="view" id="soporte">
+        <div class="two-col">
+          <article class="card pad">
+            <div class="card-head"><div><h2>Tickets de soporte</h2><p>Seguimiento postventa del paquete FacturaPro.</p></div></div>
+            <div class="support-list" id="supportRows"></div>
+          </article>
+          <article class="card pad">
+            <div class="card-head"><div><h2>Solicitar ayuda</h2><p>Formulario simulado para presentar el flujo de soporte.</p></div></div>
+            <div class="form-grid" style="grid-template-columns:1fr;">
+              <label>Tipo de incidencia<select><option>Problema con impresión</option><option>No autoriza SRI</option><option>Capacitación</option><option>Corte eléctrico / UPS</option></select></label>
+              <label>Prioridad<select><option>Media</option><option>Alta</option><option>Crítica</option></select></label>
+              <label>Descripción<input type="text" placeholder="Ej: La impresora no genera el comprobante"></label>
+              <button class="btn btn-primary" id="supportBtn">Crear ticket simulado</button>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const money = new Intl.NumberFormat('es-EC', { style: 'currency', currency: 'USD' });
+    const today = new Date('2026-07-02T10:30:00');
+
+    let products = [
+      { code: 'P-001', name: 'Arroz flor 5kg', category: 'Abarrotes', price: 7.9, stock: 38, min: 12 },
+      { code: 'P-002', name: 'Aceite vegetal 1L', category: 'Abarrotes', price: 3.25, stock: 9, min: 10 },
+      { code: 'P-003', name: 'Atún en lata', category: 'Conservas', price: 1.45, stock: 52, min: 20 },
+      { code: 'P-004', name: 'Detergente 1kg', category: 'Limpieza', price: 4.7, stock: 6, min: 8 },
+      { code: 'P-005', name: 'Gaseosa 3L', category: 'Bebidas', price: 2.5, stock: 14, min: 12 },
+      { code: 'P-006', name: 'Leche entera 1L', category: 'Lácteos', price: 1.1, stock: 7, min: 18 },
+      { code: 'P-007', name: 'Pan molde familiar', category: 'Panadería', price: 2.35, stock: 18, min: 10 }
+    ];
+
+    let clients = [
+      { id: '0912457812', name: 'María González', email: 'maria.gonzalez@email.com', buys: 18, last: '2026-07-02' },
+      { id: '0998765432001', name: 'Restaurante El Buen Sabor', email: 'compras@buensabor.ec', buys: 42, last: '2026-07-01' },
+      { id: '0923344556', name: 'Carlos Mendoza', email: 'cmendoza@email.com', buys: 9, last: '2026-06-29' },
+      { id: '0911122233', name: 'Ferretería San José', email: 'facturas@fsanjose.ec', buys: 27, last: '2026-06-30' }
+    ];
+
+    let invoices = [
+      { number: '001-001-000000128', client: 'María González', date: '2026-07-02', total: 38.42, status: 'Autorizada' },
+      { number: '001-001-000000127', client: 'Restaurante El Buen Sabor', date: '2026-07-02', total: 126.8, status: 'Autorizada' },
+      { number: '001-001-000000126', client: 'Carlos Mendoza', date: '2026-07-01', total: 19.55, status: 'Autorizada' },
+      { number: '001-001-000000125', client: 'Ferretería San José', date: '2026-07-01', total: 87.12, status: 'Pendiente' },
+      { number: '001-001-000000124', client: 'Consumidor Final', date: '2026-06-30', total: 12.65, status: 'Autorizada' }
+    ];
+
+    const salesWeek = [820, 1040, 760, 1210, 980, 1390, 1510];
+    const categories = [
+      ['Abarrotes', 72], ['Bebidas', 48], ['Limpieza', 34], ['Lácteos', 28], ['Conservas', 42]
+    ];
+    let invoiceLines = [];
+
+    const titles = {
+      dashboard: ['Dashboard', 'Resumen operativo del negocio en tiempo real.'],
+      facturas: ['Facturas electrónicas', 'Consulta, descarga y seguimiento de comprobantes.'],
+      nueva: ['Nueva factura', 'Emisión simulada con cálculo de IVA y autorización SRI.'],
+      inventario: ['Inventario', 'Control de existencias, precios y alertas de reposición.'],
+      clientes: ['Clientes', 'Base de clientes para facturación rápida.'],
+      reportes: ['Reportes', 'Indicadores gerenciales para tomar decisiones.'],
+      sri: ['Estado SRI', 'Monitoreo de autorización, firma electrónica y transmisión.'],
+      soporte: ['Soporte técnico', 'Tickets, garantía y asistencia postventa.']
+    };
+
+    document.querySelectorAll('[data-view]').forEach(button => {
+      button.addEventListener('click', () => showView(button.dataset.view));
+    });
+
+    document.querySelectorAll('[data-open-new]').forEach(button => {
+      button.addEventListener('click', () => showView('nueva'));
+    });
+
+    document.getElementById('syncBtn').addEventListener('click', () => {
+      showToast('Sincronización simulada: 12 comprobantes validados por el SRI.');
+      renderSriRows();
+    });
+
+    document.getElementById('addProduct').addEventListener('click', addProductToInvoice);
+    document.getElementById('issueInvoice').addEventListener('click', issueInvoice);
+    document.getElementById('clearInvoice').addEventListener('click', () => {
+      invoiceLines = [];
+      renderInvoiceDraft();
+    });
+    document.getElementById('restockBtn').addEventListener('click', () => {
+      products = products.map(product => ({ ...product, stock: product.stock + (product.stock <= product.min ? 18 : 3) }));
+      renderAll();
+      showToast('Reposición simulada aplicada al inventario.');
+    });
+    document.getElementById('addClientBtn').addEventListener('click', () => {
+      const count = clients.length + 1;
+      clients.push({ id: `09900012${count}`, name: `Cliente Piloto ${count}`, email: `cliente${count}@demo.ec`, buys: 1, last: '2026-07-02' });
+      renderAll();
+      showToast('Cliente simulado agregado a la base de datos.');
+    });
+    document.getElementById('supportBtn').addEventListener('click', () => showToast('Ticket FP-SOP-2026-018 creado. Tiempo estimado de atención: 25 minutos.'));
+
+    document.getElementById('globalSearch').addEventListener('input', event => {
+      const term = event.target.value.toLowerCase().trim();
+      renderInvoices(term);
+      renderProducts(term);
+      renderClients(term);
+    });
+
+    function showView(view) {
+      document.querySelectorAll('.view').forEach(section => section.classList.toggle('active', section.id === view));
+      document.querySelectorAll('[data-view]').forEach(button => button.classList.toggle('active', button.dataset.view === view));
+      document.getElementById('viewTitle').textContent = titles[view][0];
+      document.getElementById('viewSubtitle').textContent = titles[view][1];
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function renderAll() {
+      renderKpis();
+      renderCharts();
+      renderActivity();
+      renderCriticalStock();
+      renderInvoices(document.getElementById('globalSearch').value.toLowerCase().trim());
+      renderProducts(document.getElementById('globalSearch').value.toLowerCase().trim());
+      renderClients(document.getElementById('globalSearch').value.toLowerCase().trim());
+      renderInvoiceSelectors();
+      renderInvoiceDraft();
+      renderReportAlerts();
+      renderSriRows();
+      renderSupportRows();
+    }
+
+    function renderKpis() {
+      const dailySales = invoices.filter(invoice => invoice.date === '2026-07-02').reduce((sum, invoice) => sum + invoice.total, 0);
+      const uniqueClients = new Set(invoices.map(invoice => invoice.client)).size;
+      const critical = products.filter(product => product.stock <= product.min).length;
+      document.getElementById('kpiSales').textContent = money.format(dailySales);
+      document.getElementById('kpiInvoices').textContent = invoices.length;
+      document.getElementById('kpiClients').textContent = uniqueClients;
+      document.getElementById('kpiStock').textContent = critical;
+    }
+
+    function renderCharts() {
+      const maxSales = Math.max(...salesWeek);
+      document.getElementById('salesChart').innerHTML = ['Lun','Mar','Mi','Jue','Vie','Sáb','Dom'].map((day, index) => `
+        <div class="bar-wrap"><div class="bar" style="height:${(salesWeek[index] / maxSales) * 205}px"></div>${day}</div>
+      `).join('');
+
+      document.getElementById('categoryChart').innerHTML = categories.map(([name, value]) => `
+        <div class="bar-wrap"><div class="bar" style="height:${value * 2.45}px"></div>${name}</div>
+      `).join('');
+    }
+
+    function renderActivity() {
+      document.getElementById('activityList').innerHTML = invoices.slice(0, 5).map(invoice => `
+        <div class="activity"><span class="activity-icon">FE</span><div><strong>${invoice.number}</strong><span>${invoice.client} · ${invoice.status}</span></div><strong class="amount">${money.format(invoice.total)}</strong></div>
+      `).join('');
+    }
+
+    function renderCriticalStock() {
+      document.getElementById('criticalStockRows').innerHTML = products
+        .filter(product => product.stock <= product.min)
+        .map(product => `<tr><td>${product.name}</td><td>${product.stock} unidades</td><td>${stockBadge(product)}</td></tr>`)
+        .join('') || '<tr><td colspan="3">No hay productos críticos.</td></tr>';
+    }
+
+    function renderInvoices(term = '') {
+      document.getElementById('invoiceRows').innerHTML = invoices
+        .filter(invoice => [invoice.number, invoice.client, invoice.status].join(' ').toLowerCase().includes(term))
+        .map(invoice => `
+          <tr>
+            <td><strong>${invoice.number}</strong></td>
+            <td>${invoice.client}</td>
+            <td>${invoice.date}</td>
+            <td><strong>${money.format(invoice.total)}</strong></td>
+            <td>${invoice.status === 'Autorizada' ? '<span class="badge ok">Autorizada</span>' : '<span class="badge warn">Pendiente</span>'}</td>
+            <td><button class="btn" onclick="showToast('PDF y XML generados para ${invoice.number}')">Descargar</button></td>
+          </tr>
+        `).join('');
+    }
+
+    function renderProducts(term = '') {
+      document.getElementById('productRows').innerHTML = products
+        .filter(product => [product.code, product.name, product.category].join(' ').toLowerCase().includes(term))
+        .map(product => `
+          <tr>
+            <td><strong>${product.code}</strong></td>
+            <td>${product.name}</td>
+            <td>${product.category}</td>
+            <td>${money.format(product.price)}</td>
+            <td>${product.stock}</td>
+            <td>${stockBadge(product)}</td>
+          </tr>
+        `).join('');
+    }
+
+    function renderClients(term = '') {
+      document.getElementById('clientRows').innerHTML = clients
+        .filter(client => [client.id, client.name, client.email].join(' ').toLowerCase().includes(term))
+        .map(client => `
+          <tr>
+            <td><strong>${client.id}</strong></td>
+            <td>${client.name}</td>
+            <td>${client.email}</td>
+            <td>${client.buys}</td>
+            <td>${client.last}</td>
+          </tr>
+        `).join('');
+    }
+
+    function renderInvoiceSelectors() {
+      document.getElementById('invoiceClient').innerHTML = clients.map(client => `<option>${client.name}</option>`).join('') + '<option>Consumidor Final</option>';
+      document.getElementById('productSelect').innerHTML = products.map(product => `<option value="${product.code}">${product.name} - ${money.format(product.price)} (${product.stock})</option>`).join('');
+      document.getElementById('nextInvoiceNumber').textContent = nextInvoiceNumber();
+    }
+
+    function addProductToInvoice() {
+      const code = document.getElementById('productSelect').value;
+      const qty = Math.max(1, Number(document.getElementById('productQty').value || 1));
+      const product = products.find(item => item.code === code);
+      if (!product) return;
+      const existing = invoiceLines.find(item => item.code === code);
+      const requestedQty = qty + (existing ? existing.qty : 0);
+      if (requestedQty > product.stock) {
+        showToast('Stock insuficiente para agregar ese producto.');
+        return;
+      }
+      if (existing) existing.qty += qty;
+      else invoiceLines.push({ code: product.code, name: product.name, price: product.price, qty });
+      renderInvoiceDraft();
+    }
+
+    function renderInvoiceDraft() {
+      document.getElementById('invoiceLines').innerHTML = invoiceLines.map((item, index) => `
+        <div class="line-item"><div><strong>${item.name}</strong><span>${item.qty} x ${money.format(item.price)}</span></div><strong>${money.format(item.qty * item.price)}</strong><button class="btn btn-danger" onclick="removeLine(${index})">Quitar</button></div>
+      `).join('') || '<div class="line-item"><div><strong>Sin productos agregados</strong><span>Selecciona productos para emitir la factura.</span></div></div>';
+      const subtotal = invoiceLines.reduce((sum, item) => sum + item.price * item.qty, 0);
+      const tax = subtotal * 0.15;
+      const total = subtotal + tax;
+      document.getElementById('subtotal').textContent = money.format(subtotal);
+      document.getElementById('tax').textContent = money.format(tax);
+      document.getElementById('total').textContent = money.format(total);
+    }
+
+    function removeLine(index) {
+      invoiceLines.splice(index, 1);
+      renderInvoiceDraft();
+    }
+
+    function issueInvoice() {
+      if (!invoiceLines.length) {
+        showToast('Agrega al menos un producto para emitir la factura.');
+        return;
+      }
+      invoiceLines.forEach(line => {
+        const product = products.find(item => item.code === line.code);
+        if (product) product.stock -= line.qty;
+      });
+      const subtotal = invoiceLines.reduce((sum, item) => sum + item.price * item.qty, 0);
+      const total = subtotal * 1.15;
+      const client = document.getElementById('invoiceClient').value;
+      invoices.unshift({ number: nextInvoiceNumber(), client, date: '2026-07-02', total, status: 'Autorizada' });
+      const knownClient = clients.find(item => item.name === client);
+      if (knownClient) {
+        knownClient.buys += 1;
+        knownClient.last = '2026-07-02';
+      }
+      invoiceLines = [];
+      renderAll();
+      showToast('Factura emitida, firmada y autorizada por el SRI en modo simulación.');
+      showView('facturas');
+    }
+
+    function renderReportAlerts() {
+      const alerts = [
+        ['Reponer inventario', 'Aceite vegetal, leche y detergente están bajo stock mínimo.', 'warn'],
+        ['Campaña de referidos', 'Clientes frecuentes pueden activar descuentos por recomendación.', 'info'],
+        ['Buen desempeño', 'Las ventas de fin de semana superan el promedio semanal.', 'ok']
+      ];
+      document.getElementById('reportAlerts').innerHTML = alerts.map(([title, text, type]) => `<div class="activity"><span class="activity-icon">AI</span><div><strong>${title}</strong><span>${text}</span></div><span class="badge ${type}">${type === 'ok' ? 'OK' : type === 'warn' ? 'Alerta' : 'Dato'}</span></div>`).join('');
+    }
+
+    function renderSriRows() {
+      const events = [
+        ['Autorización de comprobante', '2026-07-02 10:21', 'Autorizado', 'Clave de acceso validada correctamente'],
+        ['Validación de firma', '2026-07-02 10:20', 'Correcto', 'Certificado vigente'],
+        ['Envío de lote', '2026-07-02 09:50', 'Procesado', '12 facturas aceptadas'],
+        ['Respaldo XML', '2026-07-02 09:00', 'Correcto', 'Archivos guardados en la nube']
+      ];
+      document.getElementById('sriRows').innerHTML = events.map(row => `<tr><td>${row[0]}</td><td>${row[1]}</td><td><span class="badge ok">${row[2]}</span></td><td>${row[3]}</td></tr>`).join('');
+    }
+
+    function renderSupportRows() {
+      const tickets = [
+        ['FP-SOP-2026-014', 'Cambio de rollo térmico', 'Cerrado', 'Hace 2 horas'],
+        ['FP-SOP-2026-015', 'Capacitación sobre reportes', 'En curso', 'Hace 35 minutos'],
+        ['FP-SOP-2026-016', 'Revisión de UPS', 'Programado', 'Hoy 16:00']
+      ];
+      document.getElementById('supportRows').innerHTML = tickets.map(ticket => `<div class="activity"><span class="activity-icon">ST</span><div><strong>${ticket[0]} · ${ticket[1]}</strong><span>${ticket[3]}</span></div><span class="badge ${ticket[2] === 'Cerrado' ? 'ok' : 'info'}">${ticket[2]}</span></div>`).join('');
+    }
+
+    function stockBadge(product) {
+      if (product.stock <= product.min) return '<span class="badge danger">Stock crítico</span>';
+      if (product.stock <= product.min + 5) return '<span class="badge warn">Bajo</span>';
+      return '<span class="badge ok">Disponible</span>';
+    }
+
+    function nextInvoiceNumber() {
+      const current = invoices.length ? Number(invoices[0].number.split('-').pop()) : 0;
+      return `001-001-${String(current + 1).padStart(9, '0')}`;
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.classList.add('show');
+      clearTimeout(window.toastTimer);
+      window.toastTimer = setTimeout(() => toast.classList.remove('show'), 3200);
+    }
+
+    renderAll();
+  </script>
+</body>
+</html>
